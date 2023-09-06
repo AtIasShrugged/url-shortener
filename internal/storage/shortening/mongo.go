@@ -14,8 +14,8 @@ type mgo struct {
 	db *mongo.Database
 }
 
-func NewMongoDB(client *mongo.Client) *mgo {
-	return &mgo{db: client.Database("url-shortener")}
+func NewMongoDB(client *mongo.Database) *mgo {
+	return &mgo{db: client}
 }
 
 func (m *mgo) col() *mongo.Collection {
