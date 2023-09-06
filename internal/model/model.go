@@ -3,6 +3,8 @@ package model
 import (
 	"errors"
 	"time"
+
+	"github.com/samber/mo"
 )
 
 var (
@@ -16,4 +18,10 @@ type Shortening struct {
 	Visits      int64     `json:"visits"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type ShortenInput struct {
+	RawURL     string
+	Identifier mo.Option[string]
+	CreatedBy  string
 }
