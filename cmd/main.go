@@ -14,7 +14,15 @@ import (
 	"url-shortener/internal/server"
 	"url-shortener/internal/shorten"
 	"url-shortener/internal/storage/shortening"
+
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Print("unable to load configuration")
+	}
+}
 
 func main() {
 	dbCtx, dbCancel := context.WithTimeout(context.Background(), 1*time.Second)

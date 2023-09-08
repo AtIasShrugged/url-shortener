@@ -1,19 +1,16 @@
 package config
 
 import (
-	"context"
 	"fmt"
-	"log"
-	"strings"
+	"os"
+	"strconv"
 	"sync"
-
-	"github.com/sethvargo/go-envconfig"
 )
 
 type Config struct {
-	BaseURL string `env:"base_url,default=http://localhost:8080"`
-	Host    string `env:"host,default=0.0.0.0"`
-	Port    int    `env:"port,default=8080"`
+	BaseURL string
+	Host    string
+	Port    int
 	DB      DBConfig
 }
 
@@ -22,8 +19,8 @@ func (c Config) ListenAddr() string {
 }
 
 type DBConfig struct {
-	DSN      string `env:"mongodb_dsn"`
-	Database string `env:"mongodb_database"`
+	DSN      string
+	Database string
 }
 
 var (
@@ -33,26 +30,35 @@ var (
 
 func Get() Config {
 	once.Do(func() {
-		lookuper := UpcaseLookuper(envconfig.OsLookuper())
-
-		if err := envconfig.ProcessWith(context.Background(), &cfg, lookuper); err != nil {
-			log.Fatal(err)
-		}
+		cfg = func() Config {
+			return Config{
+				BaseURL: getEnv("BASE_URL", "http://localhost:8080"),
+				Host:    getEnv("HOST", "0.0.0.0"),
+				Port:    getEnvAsInt("PORT", 8080),
+				DB: DBConfig{
+					DSN:      getEnv("MONGODB_DSN", ""),
+					Database: getEnv("MONGODB_DATABASE", ""),
+				},
+			}
+		}()
 	})
 
 	return cfg
 }
 
-type upcaseLookuper struct {
-	Next envconfig.Lookuper
-}
-
-func (ul *upcaseLookuper) Lookup(key string) (string, bool) {
-	return ul.Next.Lookup(strings.ToUpper(key))
-}
-
-func UpcaseLookuper(next envconfig.Lookuper) *upcaseLookuper {
-	return &upcaseLookuper{
-		Next: next,
+func getEnv(key string, defaultVal string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
 	}
+
+	return defaultVal
+}
+
+func getEnvAsInt(name string, defaultVal int) int {
+	valueStr := getEnv(name, "")
+	if value, err := strconv.Atoi(valueStr); err == nil {
+		return value
+	}
+
+	return defaultVal
 }
