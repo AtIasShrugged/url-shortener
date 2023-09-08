@@ -64,7 +64,10 @@ func (m *mgo) IncrementVisits(ctx context.Context, shorteningID string) error {
 
 	var (
 		filter = bson.M{"_id": shorteningID}
-		update = bson.M{"updated_at": time.Now().UTC()}
+		update = bson.M{
+			"$inc": bson.M{"visits": 1},
+			"$set": bson.M{"updated_at": time.Now().UTC()},
+		}
 	)
 
 	_, err := m.col().UpdateOne(ctx, filter, update)
