@@ -39,3 +39,16 @@ func (s *Service) Shorten(ctx context.Context, input model.ShortenInput) (*model
 
 	return shortening, nil
 }
+
+func (s *Service) Redirect(ctx context.Context, identifier string) (string, error) {
+	shortening, err := s.storage.Get(ctx, identifier)
+	if err != nil {
+		return "", err
+	}
+
+	if err := s.storage.IncrementVisits(ctx, identifier); err != nil {
+		return "", err
+	}
+
+	return shortening.OriginalUrl, nil
+}

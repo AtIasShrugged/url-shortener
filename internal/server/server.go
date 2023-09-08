@@ -39,7 +39,12 @@ func (s *Server) setupRouter() {
 	s.e.Pre(middleware.RemoveTrailingSlash())
 	s.e.Use(middleware.RequestID())
 
-	s.e.POST("/shorten", handlers.HandleShorten(s.shortener))
+	restricted := s.e.Group("/api")
+	{
+		restricted.POST("/shorten", handlers.HandleShorten(s.shortener))
+	}
+
+	s.e.GET("/:identifier", handlers.HandleRedirect(s.shortener))
 
 	s.AddCloser(s.e.Shutdown)
 }
