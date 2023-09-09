@@ -31,10 +31,11 @@ func (c *Client) ExchangeCodeToAccessKey(ctx context.Context, clientID, clientSe
 
 	reqJSON, err := json.Marshal(req)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
-	request, err := http.NewRequestWithContext(ctx,
+	request, err := http.NewRequestWithContext(
+		ctx,
 		http.MethodPost,
 		"https://github.com/login/oauth/access_token",
 		bytes.NewReader(reqJSON),

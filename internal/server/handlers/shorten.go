@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -10,7 +11,7 @@ import (
 	"url-shortener/internal/model"
 	"url-shortener/internal/shorten"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/samber/mo"
 )
@@ -41,6 +42,7 @@ func HandleShorten(shortener shortener) echo.HandlerFunc {
 		}
 
 		userToken, ok := c.Get("user").(*jwt.Token)
+		fmt.Println(userToken, ok)
 		if !ok {
 			log.Println("error: user is not presented in context")
 			return echo.NewHTTPError(http.StatusInternalServerError)

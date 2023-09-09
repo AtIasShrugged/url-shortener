@@ -15,7 +15,7 @@ var (
 
 type Shortening struct {
 	Identifier  string    `json:"identifier"`
-	OriginalUrl string    `json:"original_url"`
+	OriginalURL string    `json:"original_url"`
 	Visits      int64     `json:"visits"`
 	CreatedBy   string    `json:"created_by"`
 	CreatedAt   time.Time `json:"created_at"`

@@ -80,7 +80,7 @@ func (m *mgo) IncrementVisits(ctx context.Context, shorteningID string) error {
 
 type mgoShortening struct {
 	Identifier  string    `bson:"_id"`
-	OriginalUrl string    `bson:"original_url"`
+	OriginalURL string    `bson:"original_url"`
 	Visits      int64     `bson:"visits"`
 	CreatedBy   string    `bson:"created_by"`
 	CreatedAt   time.Time `bson:"created_at"`
@@ -90,7 +90,7 @@ type mgoShortening struct {
 func mgoShorteningFromModel(shortening model.Shortening) mgoShortening {
 	return mgoShortening{
 		Identifier:  shortening.Identifier,
-		OriginalUrl: shortening.OriginalUrl,
+		OriginalURL: shortening.OriginalURL,
 		Visits:      shortening.Visits,
 		CreatedBy:   shortening.CreatedBy,
 		CreatedAt:   shortening.CreatedAt,
@@ -101,7 +101,7 @@ func mgoShorteningFromModel(shortening model.Shortening) mgoShortening {
 func modelShorteningFromMgo(shortening mgoShortening) *model.Shortening {
 	return &model.Shortening{
 		Identifier:  shortening.Identifier,
-		OriginalUrl: shortening.OriginalUrl,
+		OriginalURL: shortening.OriginalURL,
 		Visits:      shortening.Visits,
 		CreatedBy:   shortening.CreatedBy,
 		CreatedAt:   shortening.CreatedAt,

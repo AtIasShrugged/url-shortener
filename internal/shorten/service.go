@@ -29,7 +29,7 @@ func (s *Service) Shorten(ctx context.Context, input model.ShortenInput) (*model
 
 	dbShortening := model.Shortening{
 		Identifier:  identifier,
-		OriginalUrl: input.RawURL,
+		OriginalURL: input.RawURL,
 		CreatedBy:   input.CreatedBy,
 	}
 
@@ -51,5 +51,5 @@ func (s *Service) Redirect(ctx context.Context, identifier string) (string, erro
 		return "", err
 	}
 
-	return shortening.OriginalUrl, nil
+	return shortening.OriginalURL, nil
 }

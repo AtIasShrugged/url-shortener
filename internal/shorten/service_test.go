@@ -25,7 +25,7 @@ func TestService_Shorten(t *testing.T) {
 		require.NoError(t, err)
 
 		require.NotEmpty(t, shortening.Identifier)
-		assert.Equal(t, input.RawURL, shortening.OriginalUrl)
+		assert.Equal(t, input.RawURL, shortening.OriginalURL)
 		assert.NotZero(t, shortening.CreatedAt)
 	})
 
@@ -45,7 +45,7 @@ func TestService_Shorten(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, identifier, shortening.Identifier)
-		assert.Equal(t, url, shortening.OriginalUrl)
+		assert.Equal(t, url, shortening.OriginalURL)
 		assert.NotZero(t, shortening.CreatedAt)
 	})
 

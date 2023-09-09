@@ -21,10 +21,10 @@ func HandleRedirect(redirecter redirecter) echo.HandlerFunc {
 		redirectURL, err := redirecter.Redirect(c.Request().Context(), identifier)
 		if err != nil {
 			if errors.Is(err, model.ErrNotFound) {
-				return echo.NewHTTPError(http.StatusNotFound, err.Error())
+				return echo.NewHTTPError(http.StatusNotFound)
 			}
 
-			log.Printf("failed to redirect: %v", err)
+			log.Printf("error getting redirect url for %q: %v", identifier, err)
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
 
