@@ -12,6 +12,8 @@ type Config struct {
 	Host    string
 	Port    int
 	DB      DBConfig
+	Github  GithubConfig
+	Auth    AuthConfig
 }
 
 func (c Config) ListenAddr() string {
@@ -21,6 +23,15 @@ func (c Config) ListenAddr() string {
 type DBConfig struct {
 	DSN      string
 	Database string
+}
+
+type GithubConfig struct {
+	ClientID     string
+	ClientSecret string
+}
+
+type AuthConfig struct {
+	JWTSecretKey string
 }
 
 var (
@@ -38,6 +49,13 @@ func Get() Config {
 				DB: DBConfig{
 					DSN:      getEnv("MONGODB_DSN", ""),
 					Database: getEnv("MONGODB_DATABASE", ""),
+				},
+				Github: GithubConfig{
+					ClientID:     getEnv("GITHUB_CLIENT_ID", ""),
+					ClientSecret: getEnv("GITHUB_CLIENT_SECRET", ""),
+				},
+				Auth: AuthConfig{
+					JWTSecretKey: getEnv("JWT_SECRET", "secret"),
 				},
 			}
 		}()

@@ -3,6 +3,9 @@ package server
 import (
 	"context"
 	"net/http"
+	"url-shortener/internal/auth"
+	"url-shortener/internal/config"
+	"url-shortener/internal/model"
 	"url-shortener/internal/server/handlers"
 	"url-shortener/internal/shorten"
 
@@ -15,12 +18,14 @@ type CloseFunc func(context.Context) error
 type Server struct {
 	e         *echo.Echo
 	shortener *shorten.Service
+	auth      *auth.Service
 	closers   []CloseFunc
 }
 
-func New(shortener *shorten.Service) *Server {
+func New(shortener *shorten.Service, auth *auth.Service) *Server {
 	s := &Server{
 		shortener: shortener,
+		auth:      auth,
 	}
 	s.setupRouter()
 
@@ -39,8 +44,14 @@ func (s *Server) setupRouter() {
 	s.e.Pre(middleware.RemoveTrailingSlash())
 	s.e.Use(middleware.RequestID())
 
+	s.e.GET("/auth/oauth/github/link", handlers.HandleGetGithubAuthLink(s.auth))
+	s.e.GET("/auth/oauth/github/callback", handlers.HandleGithubAuthCallback(s.auth))
+	s.e.GET("/auth/token.html", handlers.HandleTokenPage())
+	s.e.GET("/static/*", handlers.HandleStatic())
+
 	restricted := s.e.Group("/api")
 	{
+		restricted.Use(middleware.JWTWithConfig(makeJWTConfig()))
 		restricted.POST("/shorten", handlers.HandleShorten(s.shortener))
 	}
 
@@ -60,4 +71,14 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		}
 	}
 	return nil
+}
+
+func makeJWTConfig() middleware.JWTConfig {
+	return middleware.JWTConfig{
+		SigningKey: []byte(config.Get().Auth.JWTSecretKey),
+		Claims:     &model.UserClaims{},
+		ErrorHandler: func(err error) error {
+			return echo.NewHTTPError(http.StatusUnauthorized)
+		},
+	}
 }

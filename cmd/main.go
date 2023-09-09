@@ -9,11 +9,14 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"url-shortener/internal/auth"
 	"url-shortener/internal/config"
 	"url-shortener/internal/db"
+	"url-shortener/internal/github"
 	"url-shortener/internal/server"
 	"url-shortener/internal/shorten"
 	"url-shortener/internal/storage/shortening"
+	"url-shortener/internal/storage/user"
 
 	"github.com/joho/godotenv"
 )
@@ -37,8 +40,16 @@ func main() {
 
 	var (
 		shorteningStorage = shortening.NewMongoDB(mgoDB)
+		userStorage       = user.NewMongoDB(mgoDB)
 		shortener         = shorten.NewService(shorteningStorage)
-		srv               = server.New(shortener)
+		githubClient      = github.NewClient()
+		authenticator     = auth.NewService(
+			githubClient,
+			userStorage,
+			config.Get().Github.ClientID,
+			config.Get().Github.ClientSecret,
+		)
+		srv = server.New(shortener, authenticator)
 	)
 
 	srv.AddCloser(mgoClient.Close)
