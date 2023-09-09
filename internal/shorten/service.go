@@ -30,6 +30,7 @@ func (s *Service) Shorten(ctx context.Context, input model.ShortenInput) (*model
 	dbShortening := model.Shortening{
 		Identifier:  identifier,
 		OriginalUrl: input.RawURL,
+		CreatedBy:   input.CreatedBy,
 	}
 
 	shortening, err := s.storage.Put(ctx, dbShortening)

@@ -82,6 +82,7 @@ type mgoShortening struct {
 	Identifier  string    `bson:"_id"`
 	OriginalUrl string    `bson:"original_url"`
 	Visits      int64     `bson:"visits"`
+	CreatedBy   string    `bson:"created_by"`
 	CreatedAt   time.Time `bson:"created_at"`
 	UpdatedAt   time.Time `bson:"updated_at"`
 }
@@ -91,6 +92,7 @@ func mgoShorteningFromModel(shortening model.Shortening) mgoShortening {
 		Identifier:  shortening.Identifier,
 		OriginalUrl: shortening.OriginalUrl,
 		Visits:      shortening.Visits,
+		CreatedBy:   shortening.CreatedBy,
 		CreatedAt:   shortening.CreatedAt,
 		UpdatedAt:   shortening.UpdatedAt,
 	}
@@ -101,6 +103,7 @@ func modelShorteningFromMgo(shortening mgoShortening) *model.Shortening {
 		Identifier:  shortening.Identifier,
 		OriginalUrl: shortening.OriginalUrl,
 		Visits:      shortening.Visits,
+		CreatedBy:   shortening.CreatedBy,
 		CreatedAt:   shortening.CreatedAt,
 		UpdatedAt:   shortening.UpdatedAt,
 	}
