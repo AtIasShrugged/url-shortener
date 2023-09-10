@@ -41,6 +41,15 @@ func (s *Service) Shorten(ctx context.Context, input model.ShortenInput) (*model
 	return shortening, nil
 }
 
+func (s *Service) Get(ctx context.Context, identifier string) (*model.Shortening, error) {
+	shortening, err := s.storage.Get(ctx, identifier)
+	if err != nil {
+		return nil, err
+	}
+
+	return shortening, nil
+}
+
 func (s *Service) Redirect(ctx context.Context, identifier string) (string, error) {
 	shortening, err := s.storage.Get(ctx, identifier)
 	if err != nil {

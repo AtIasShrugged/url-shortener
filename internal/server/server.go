@@ -53,6 +53,7 @@ func (s *Server) setupRouter() {
 	{
 		restricted.Use(middleware.JWTWithConfig(makeJWTConfig()))
 		restricted.POST("/shorten", handlers.HandleShorten(s.shortener))
+		restricted.GET("/stats/:identifier", handlers.HandleStats(s.shortener))
 	}
 
 	s.e.GET("/:identifier", handlers.HandleRedirect(s.shortener))
