@@ -16,6 +16,7 @@ type Storage interface {
 	Deactivate(context.Context, string) error
 }
 
+//go:generate moq --out=mock_github_client.gen.go --pkg=auth . GithubClient
 type GithubClient interface {
 	ExchangeCodeToAccessKey(ctx context.Context, clientID, clientSeret, code string) (string, error)
 	GetUser(ctx context.Context, accessKey, user string) (*github.User, error)
